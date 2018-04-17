@@ -1,12 +1,56 @@
-1.  TODO
-2.  TODO
-3.  TODO
-4.  TODO
-5.  TODO
-6.  TODO
-7.  TODO
-8.  TODO
-9.  TODO
-10. TODO
-11. TODO
-12. TODO
+1.  stdint.h is a header file that declares sets of integer types. helps you ensure code portability across platforms and compilers
+
+2.  typedef int                int32_t;
+    typedef unsigned char      uint8_t;
+    typedef unsigned short     uint16_t;
+    typedef unsigned int       uint32_t;
+
+    We want to use these data types in a program so we can use the maximum values, every type is set at the maximum value for that type
+
+3.  BYTE- 8 bits/1 byte  DWORD- 32 bits/4 bytes  LONG- 32 bits/4 bytes   WORD- 16 bits/2 bytes
+
+4.  B and M
+
+5.  bfSize - The size, in bytes, of the bitmap file. biSize - the number of bytes required by the structure
+
+6.  biHeight is the height of the bitmap, in pixels. If it is negative, the bitmap is a top-down DIB and its origin is the upper-left corner
+
+7.  biBitCount
+
+8.  If there is a permission error with a read only file or write only file, it will return NULL. or if the file doesn't exit.
+
+9.  Because the 3rd argument is how many times we are to read an element. We only want to read each of those elements one time to run our code fread returns the total number of "chunks" successfully read in; this should correspond to the blocks (which is our 1) parameter. If it doesn’t, it means your program either ran into an error or the EOF was reached.
+
+10. 3. sizeof(RGBTRIPLE) == 3. So 3 * 3 == 9. 9 % 4 == 1. 1 % 1 == 4. 4 - 1 == 3.    (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4; 9 + 3 == 12, it must be a multiple of 4.
+
+11. Changes the offset of a file pointer. Normally when reading from a file, the pointer goes from start to end. fseek allows you to change locaton of the file pointer.
+
+12. This moves the file pointer to the given location
+
+
+
+
+
+1. What’s stdint.h?
+
+2. What’s the point of using uint8_t, uint32_t, int32_t, and uint16_t in a program?
+
+3. How many bytes is a BYTE, a DWORD, a LONG, and a WORD, respectively?
+
+4. What (in ASCII, decimal, or hexadecimal) must the first two bytes of any BMP file be? Leading bytes used to identify file formats (with high probability) are generally called "magic numbers."
+
+5. What’s the difference between bfSize and biSize?
+
+6. What does it mean if biHeight is negative?
+
+7. What field in BITMAPINFOHEADER specifies the BMP’s color depth (i.e., bits per pixel)?
+
+8. Why might fopen return NULL in lines 24 and 32 of copy.c?
+
+9. Why is the third argument to fread always 1 in our code?
+
+10. What value does line 65 of copy.c assign to padding if bi.biWidth is 3?
+
+11. What does fseek do?
+
+12. What is SEEK_CUR?
