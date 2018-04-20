@@ -108,8 +108,3 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
-// if (triple.rgbtRed == 0xff)
-// {
-//     triple.rgbtRed == 0xffffff;
-// }
