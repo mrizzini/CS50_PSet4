@@ -19,24 +19,24 @@ int main(int argc, char *argv[])
     // remember filenames
     char *infile = argv[2];
     char *outfile = argv[3];
-    int n = atoi(argv[1]);
+    int enlargeBy = atoi(argv[1]); // size we want to enlarge the file by
 
-    if (n < 1 || n > 100)
+    if (enlargeBy < 1 || enlargeBy > 100) // error checking for size
     {
-        fprintf(stderr, "N must be a positive integer less than or equal to 100, %i\n", n);
+        fprintf(stderr, "enlargeBy must be a positive integer less than or equal to 100, %i\n", enlargeBy);
         return 1;
     }
 
     // open input file
     FILE *inptr = fopen(infile, "r");
-    if (inptr == NULL)
+    if (inptr == NULL) // error checking for error in file
     {
         fprintf(stderr, "Could not open %s.\n", infile);
         return 2;
     }
 
     // open output file
-    FILE *outptr = fopen(outfile, "w");
+    FILE *outptr = fopen(outfile, "w"); // file we want to write to
     if (outptr == NULL)
     {
         fclose(inptr);
@@ -66,10 +66,10 @@ int main(int argc, char *argv[])
     // determine padding for scanlines
     int oldPadding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4; // OLD PADDING
     int oldWidth = bi.biWidth; // OLD WIDTH (INPUT)
-    int oldHeight = bi.biHeight;
+    int oldHeight = bi.biHeight; //OLD HEIGHT (INPUT)
 
-    bi.biWidth *= n; // will now be NEW WIDTH
-    bi.biHeight *= n; // will now be NEW HEIGHT
+    bi.biWidth *= enlargeBy; // will now be NEW WIDTH we want the picture to be
+    bi.biHeight *= enlargeBy; // will now be NEW HEIGHT we want the picture to be
     int newPadding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4; // NEW PADDING, uses NEW WIDTH VALUE
 
     bi.biSizeImage = ((sizeof(RGBTRIPLE) * bi.biWidth) + newPadding) * abs(bi.biHeight); // NEW VALUES
@@ -82,63 +82,53 @@ int main(int argc, char *argv[])
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // int offset = oldWidth * sizeof(RGBTRIPLE);
+
     // iterate over infile's scanlines (for each row) 1ST LOOP
-    for (int i = 0, biHeight = abs(oldHeight); i < biHeight; i++) // uses NEW HEIGHTS
+    for (int i = 0, biHeight = abs(oldHeight); i < biHeight; i++) // loops thru OLD HEIGHT to scale to new size
     {
 
-        for (int repeat = 0; repeat < n ; repeat++)
+        for (int repeat = 0; repeat < enlargeBy ; repeat++)
         {
 
-
-            for (int j = 0; j < oldWidth; j++) // uses
+            for (int j = 0; j < oldWidth; j++) // uses OLD WIDTH to scale to new size
             {
+                // temporary storage
+                RGBTRIPLE triple;
 
-                    // temporary storage
-                    RGBTRIPLE triple;
+                // read RGB triple from infile
+                fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-                    // read RGB triple from infile
-                    fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+                //output pixels per input pixel in a line 4TH LOOP
+                // write RGB triple to outfile
 
-                    //output pixels per input pixel in a line 4TH LOOP
-                    // write RGB triple to outfile
-
-                    for (int pix = 0; pix < n; pix++)
-                    {
-
+                for (int pix = 0; pix < enlargeBy; pix++) // writes to new file. uses new value to enlarge by
+                {
                     fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
                     // fputc(0x00, outptr);
-                    }
+                }
             }
 
-
-
-            // then add it back (to demonstrate how)
+            // writes padding
             for (int k = 0; k < newPadding; k++)
             {
                 fputc(0x00, outptr);
             }
 
-            if (repeat < n - 1)
+            if (repeat < enlargeBy - 1) // does this n - 1 times. fseek moves file cursor back to start of row. will not do this the last time thru the loop
             {
-            // fseek(inptr, -(oldWidth * sizeof(RGBTRIPLE)), SEEK_CUR);
-            // fseek(inptr, -offset, SEEK_CUR);
-            fseek(inptr, -(oldWidth * sizeof(RGBTRIPLE)), SEEK_CUR);
+                fseek(inptr, -(oldWidth * sizeof(RGBTRIPLE)), SEEK_CUR);
             }
-
-
-
         }
 
-               // skip over padding, if any
-            fseek(inptr, oldPadding, SEEK_CUR);
-
-        // fseek(inptr, padding, SEEK_CUR);
+        // skip over padding, if any
+        fseek(inptr, oldPadding, SEEK_CUR);
 
     }
-    // close infile
+
+    // close infile at end of loop
     fclose(inptr);
 
-    // close outfile
+    // close outfile at end of loop
     fclose(outptr);
 
     // success
