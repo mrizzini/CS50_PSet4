@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     for (int i = 0, biHeight = abs(oldHeight); i < biHeight; i++) // loops thru OLD HEIGHT to scale to new size
     {
 
-        for (int repeat = 0; repeat < enlargeBy ; repeat++)
+        for (int repeat = 0; repeat < enlargeBy; repeat++)
         {
 
             for (int j = 0; j < oldWidth; j++) // uses OLD WIDTH to scale to new size
